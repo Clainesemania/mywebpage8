@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claine — Portfolio</title>
+
+  <!-- Non-blocking fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400&display=swap"
+    media="print" onload="this.media='all'" />
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400&display=swap" />
+  </noscript>
+
+  <style>
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       TOKENS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    :root {
+      --g1: #ffe9a0;   /* gold highlight  */
+      --g2: #d4a63a;   /* gold main       */
+      --g3: #a07828;   /* gold deep       */
+      --g4: rgba(212,166,58,.18); /* gold tint */
+      --bg: #080704;
+      --bg2: #111009;
+      --bg3: #1a1810;
+      --txt: #e8dfc8;
+      --txt2: rgba(232,223,200,.55);
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --ease: cubic-bezier(.4,0,.2,1);
+      --ease-out: cubic-bezier(0,0,.2,1);
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       RESET
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      font-weight: 300;
+      background: var(--bg);
+      color: var(--txt);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       GOLD GRAIN TEXTURE OVERLAY
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: .5;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       NAV
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 3rem;
+      background: linear-gradient(to bottom, rgba(8,7,4,.9) 0%, transparent 100%);
+      backdrop-filter: blur(0px);
+      transition: background .5s var(--ease), backdrop-filter .5s var(--ease);
+    }
+
+    nav.scrolled {
+      background: rgba(8,7,4,.92);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 500;
+      color: var(--g1);
+      letter-spacing: .06em;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: .72rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--txt2);
+      text-decoration: none;
+      position: relative;
+      transition: color .35s var(--ease);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: var(--g2);
+      transition: width .4s var(--ease-out);
+    }
+
+    .nav-links a:hover { color: var(--g1); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       HERO / HEADER
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    header {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    /* radial gold light behind hero */
+    header::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -55%);
+      width: 70vw; height: 70vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,166,58,.12) 0%, transparent 70%);
+      pointer-events: none;
+      animation: breathe 7s ease-in-out infinite alternate;
+    }
+
+    @keyframes breathe {
+      from { transform: translate(-50%,-55%) scale(.9); opacity: .7; }
+      to   { transform: translate(-50%,-55%) scale(1.1); opacity: 1; }
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.1rem;
+    }
+
+    .hero-eyebrow {
+      font-size: .65rem;
+      letter-spacing: .55em;
+      text-transform: uppercase;
+      color: var(--g2);
+      opacity: 0;
+      animation: fadeUp .8s var(--ease-out) .3s forwards;
+    }
+
+    header h1 {
+      font-family: var(--serif);
+      font-size: clamp(4.5rem, 14vw, 9rem);
+      font-weight: 400;
+      line-height: .95;
+      letter-spacing: .04em;
+      /* gold gradient text */
+      background: linear-gradient(160deg, var(--g1) 0%, var(--g2) 50%, var(--g1) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% 200%;
+      opacity: 0;
+      animation:
+        fadeUp     .9s var(--ease-out) .5s forwards,
+        goldShift  5s linear          1.4s infinite;
+    }
+
+    @keyframes goldShift {
+      0%   { background-position: 0%   50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0%   50%; }
+    }
+
+    .tagline {
+      font-size: .88rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--txt2);
+      opacity: 0;
+      animation: fadeUp .8s var(--ease-out) .75s forwards;
+    }
+
+    /* decorative line */
+    .hero-line {
+      width: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--g2), transparent);
+      opacity: 0;
+      animation: lineGrow .9s var(--ease-out) 1s forwards;
+    }
+
+    @keyframes lineGrow {
+      from { width: 0;     opacity: 0; }
+      to   { width: 120px; opacity: 1; }
+    }
+
+    /* scroll cue */
+    .scroll-cue {
+      position: absolute;
+      bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: .58rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--txt2);
+      opacity: 0;
+      animation: fadeUp .7s ease 1.4s forwards;
+    }
+
+    .scroll-cue span {
+      display: block;
+      width: 1px; height: 42px;
+      background: linear-gradient(to bottom, var(--g2), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%   { transform: scaleY(0); transform-origin: top; }
+      49%  { transform: scaleY(1); transform-origin: top; }
+      50%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SHARED SECTION STYLES
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    section {
+      padding: 7rem 0;
+      border-top: 1px solid rgba(212,166,58,.1);
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: .6rem;
+      letter-spacing: .5em;
+      text-transform: uppercase;
+      color: var(--g2);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(1.9rem, 4vw, 2.7rem);
+      font-weight: 400;
+      color: var(--txt);
+      margin-bottom: 2.8rem;
+      letter-spacing: .02em;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SCROLL-REVEAL CLASSES
+       .sr  = main reveal (fade + lift)
+       .sr2 = child reveal (staggered)
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .sr, .sr2 {
+      opacity: 0;
+      transform: translateY(28px);
+      transition:
+        opacity  .75s var(--ease-out),
+        transform .75s var(--ease-out);
+      will-change: opacity, transform;
+    }
+
+    .sr.in, .sr2.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       INTRO SECTION
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    #intro .intro-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: .9rem;
+      max-width: 480px;
+    }
+
+    #intro p {
+      font-size: 1.05rem;
+      line-height: 1.95;
+      color: var(--txt2);
+    }
+
+    #intro p:first-child {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.45rem;
+      color: var(--g1);
+      line-height: 1.5;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       ABOUT CARDS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1px;
+    }
+
+    .about-card {
+      background: var(--bg2);
+      padding: 2.2rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform .45s var(--ease), background .35s var(--ease);
+    }
+
+    /* top gold accent line */
+    .about-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--g3), var(--g2), var(--g3));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .5s var(--ease-out);
+    }
+
+    /* inner glow */
+    .about-card::after {
+      content: '';
+      position: absolute;
+      top: -60px; left: -60px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,166,58,.1) 0%, transparent 70%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .4s var(--ease);
+    }
+
+    .about-card:hover {
+      transform: translateY(-5px);
+      background: var(--bg3);
+    }
+
+    .about-card:hover::before { transform: scaleX(1); }
+    .about-card:hover::after  { opacity: 1; }
+
+    .about-card h3 {
+      font-size: .65rem;
+      letter-spacing: .4em;
+      text-transform: uppercase;
+      color: var(--g2);
+      margin-bottom: 1rem;
+    }
+
+    .about-card p {
+      font-size: .95rem;
+      line-height: 1.85;
+      color: var(--txt2);
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       PROJECT CARDS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--bg2);
+      overflow: hidden;
+      position: relative;
+      transition: transform .5s var(--ease), box-shadow .5s var(--ease);
+    }
+
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(212,166,58,.15);
+    }
+
+    .project-image {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* gold tint overlay on image */
+    .project-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(212,166,58,.08) 0%,
+        rgba(8,7,4,.6)       100%
+      );
+      transition: opacity .4s var(--ease);
+    }
+
+    .project-card:hover .project-image::after {
+      opacity: .5;
+    }
+
+    .project-image img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(.6) saturate(.8);
+      transition: transform .7s var(--ease), filter .5s var(--ease);
+    }
+
+    .project-card:hover .project-image img {
+      transform: scale(1.07);
+      filter: brightness(.75) saturate(.9);
+    }
+
+    .project-content {
+      padding: 1.5rem 1.6rem 1.8rem;
+    }
+
+    .project-title {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: var(--txt);
+      margin-bottom: .45rem;
+      letter-spacing: .02em;
+    }
+
+    .project-description {
+      font-size: .82rem;
+      color: var(--txt2);
+      line-height: 1.7;
+      margin-bottom: 1.1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .65rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--g2);
+      text-decoration: none;
+      padding-bottom: 2px;
+      border-bottom: 1px solid rgba(212,166,58,.3);
+      transition: color .3s var(--ease), border-color .3s var(--ease), gap .35s var(--ease);
+    }
+
+    .btn:hover {
+      color: var(--g1);
+      border-color: var(--g1);
+      gap: 13px;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       FOOTER
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 3.5rem 2rem 2.5rem;
+      border-top: 1px solid rgba(212,166,58,.1);
+    }
+
+    .footer-name {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: var(--g2);
+      letter-spacing: .3em;
+      text-transform: uppercase;
+    }
+
+    .footer-note {
+      margin-top: .6rem;
+      font-size: .65rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--txt2);
+      opacity: .6;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       KEYFRAME HELPERS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       RESPONSIVE
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    @media (max-width: 560px) {
+      nav { padding: 1.1rem 1.5rem; }
+      .nav-links { gap: 1.3rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ──────────────────────────────────── -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">Claine</a>
+    <ul class="nav-links">
+      <li><a href="#intro">Intro</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Header ───────────────────────────────── -->
+  <header>
+    <div class="header-content">
+      <p class="hero-eyebrow">Portfolio</p>
+      <h1>Claine</h1>
+      <div class="hero-line"></div>
+      <p class="tagline">Hi, welcome to my website</p>
+    </div>
+
+    <div class="scroll-cue">
+      Scroll
+      <span></span>
+    </div>
+  </header>
+
+  <!-- ── Main ─────────────────────────────────── -->
+  <div class="container">
+
+    <!-- Intro -->
+    <section id="intro">
+      <p class="section-tag sr">Introduction</p>
+      <h2 class="section-title sr">Hello, I'm Claine</h2>
+      <div class="intro-wrap">
+        <p class="sr2">Hi! My name is Claine.</p>
+        <p class="sr2">I am a student learning web development.</p>
+        <p class="sr2">This website is my personal portfolio.</p>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about">
+      <p class="section-tag sr">About Me 😉</p>
+      <h2 class="section-title sr">A Little About Me</h2>
+
+      <div class="about-grid">
+        <div class="about-card sr2">
+          <h3>⭐ Hobby</h3>
+          <p>Gaming, Reading, Music</p>
+        </div>
+        <div class="about-card sr2">
+          <h3>⭐ Future Plans</h3>
+          <p>Graduate, and find a job to support my family.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects">
+      <p class="section-tag sr">Socials / Projects</p>
+      <h2 class="section-title sr">My Work</h2>
+
+      <div class="projects-grid">
+
+        <div class="project-card sr2">
+          <div class="project-image">
+            <img src="images/pic02.jpg" alt="GDevelop" loading="lazy" />
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">GDevelop</h3>
+            <p class="project-description">Check out my game!</p>
+            <a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0"
+               target="_blank" rel="noopener" class="btn">View →</a>
+          </div>
+        </div>
+
+        <div class="project-card sr2">
+          <div class="project-image">
+            <img src="images/pic03.jpg" alt="YouTube" loading="lazy" />
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">YouTube</h3>
+            <p class="project-description">Watch my simple gaming content!</p>
+            <a href="https://youtube.com/@hotdogpandesal-gaming?si=mxgZnGF4sPheFv-Z"
+               target="_blank" rel="noopener" class="btn">View →</a>
+          </div>
+        </div>
+
+        <div class="project-card sr2">
+          <div class="project-image">
+            <img src="images/pic04.jpg" alt="GitHub" loading="lazy" />
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">GitHub</h3>
+            <p class="project-description">View my code and projects!</p>
+            <a href="https://github.com/Clainesemania"
+               target="_blank" rel="noopener" class="btn">View →</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ── Footer ───────────────────────────────── -->
+  <footer>
+    <p class="footer-name">Claine</p>
+    <p class="footer-note">Still Improving</p>
+  </footer>
+
+  <script>
+    /* ── Nav scroll state ── */
+    var nav = document.getElementById('nav');
+    window.addEventListener('scroll', function () {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    /* ── Scroll reveal ──
+       .sr  elements fade up when they enter the viewport.
+       .sr2 elements stagger by sibling index (0.1s each).   */
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+
+        var el = entry.target;
+
+        if (el.classList.contains('sr2')) {
+          var siblings = Array.from(
+            el.parentElement.querySelectorAll('.sr2')
+          );
+          el.style.transitionDelay = (siblings.indexOf(el) * 0.1) + 's';
+        }
+
+        el.classList.add('in');
+        io.unobserve(el);
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.sr, .sr2').forEach(function (el) {
+      io.observe(el);
+    });
+  </script>
+
+</body>
+      </html>
+
